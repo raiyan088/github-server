@@ -27,7 +27,6 @@ app.get('/time', async function (req, res) {
     res.end(startServer.getTime().toString())
 })
 
-
 app.get('/ip', async function (req, res) {
     if (IP) {
         res.end(IP)
@@ -50,61 +49,54 @@ app.post('/github', async function (req, res) {
         try {
             let mData = req.body
 
-            if (IP) {
-                if (true) {
-                    request({
-                        url: 'https://github.com/'+mData['user']+'/'+mData['user']+'/actions/runs/'+mData['action'],
-                        method: 'GET',
-                        headers: getFrameHeader(mData['cookies']),
-                        followAllRedirects: false,
-                    }, function (error, response, body) {
-                        if (error) {
-                            res.end(JSON.stringify({ 'status': 'ERROR' }))
-                        } else {
-                            try {
-                                if (body.includes('Failure') || body.includes('Success')) {
-                                    const dom = new JSDOM(body)
-                                    let token = dom.window.document.querySelector('input[name="authenticity_token"]').value
-                                    
-                                    if (token && token.length > 10) {
-                                        request({
-                                            url: 'https://github.com/'+mData['user']+'/'+mData['user']+'/actions/runs/'+mData['action']+'/rerequest_check_suite',
-                                            method: 'POST',
-                                            headers: getGrapHeader(mData['cookies']),
-                                            body: '_method=put&authenticity_token='+token,
-                                            followAllRedirects: false,
-                                        }, function (error, response, body) {
-                                            if (error) {
-                                                res.end(JSON.stringify({ 'status': 'ERROR' }))
-                                            } else {
-                                                try {
-                                                    if (body.length > 0) {
-                                                        res.end(JSON.stringify({ 'status': 'BLOCK' }))
-                                                    } else {
-                                                        res.end(JSON.stringify({ 'status': 'OK' }))
-                                                    }
-                                                } catch (error) {
-                                                    res.end(JSON.stringify({ 'status': 'ERROR' }))
-                                                }
-                                            }
-                                        })
-                                    } else {
+            request({
+                url: 'https://github.com/'+mData['user']+'/'+mData['user']+'/actions/runs/'+mData['action'],
+                method: 'GET',
+                headers: getFrameHeader(mData['cookies']),
+                followAllRedirects: false,
+            }, function (error, response, body) {
+                if (error) {
+                    res.end(JSON.stringify({ 'status': 'ERROR' }))
+                } else {
+                    try {
+                        if (body.includes('Failure') || body.includes('Success')) {
+                            const dom = new JSDOM(body)
+                            let token = dom.window.document.querySelector('input[name="authenticity_token"]').value
+                            
+                            if (token && token.length > 10) {
+                                console.log(token)
+                                request({
+                                    url: 'https://github.com/'+mData['user']+'/'+mData['user']+'/actions/runs/'+mData['action']+'/rerequest_check_suite',
+                                    method: 'POST',
+                                    headers: getGrapHeader(mData['cookies']),
+                                    body: '_method=put&authenticity_token='+token,
+                                    followAllRedirects: false,
+                                }, function (error, response, body) {
+                                    if (error) {
                                         res.end(JSON.stringify({ 'status': 'ERROR' }))
+                                    } else {
+                                        try {
+                                            if (body.length > 0) {
+                                                res.end(JSON.stringify({ 'status': 'BLOCK' }))
+                                            } else {
+                                                res.end(JSON.stringify({ 'status': 'OK' }))
+                                            }
+                                        } catch (error) {
+                                            res.end(JSON.stringify({ 'status': 'ERROR' }))
+                                        }
                                     }
-                                } else {
-                                    res.end(JSON.stringify({ 'status': 'ACTIVE' }))
-                                }
-                            } catch (error) {
+                                })
+                            } else {
                                 res.end(JSON.stringify({ 'status': 'ERROR' }))
                             }
+                        } else {
+                            res.end(JSON.stringify({ 'status': 'ACTIVE' }))
                         }
-                    })
-                } else {
-                    res.end(JSON.stringify({ 'status': 'CHANGE' }))
+                    } catch (error) {
+                        res.end(JSON.stringify({ 'status': 'ERROR' }))
+                    }
                 }
-            } else {
-                res.end(JSON.stringify({ 'status': 'NULL' }))
-            }
+            })
         } catch (e) {
             res.end(JSON.stringify({ 'status': 'ERROR' }))
         }
