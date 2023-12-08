@@ -78,7 +78,7 @@ app.post('/github', async function (req, res) {
                                                 res.end(JSON.stringify({ 'status': 'ERROR' }))
                                             } else {
                                                 try {
-                                                    if (response.data.length > 0) {
+                                                    if (body.length > 0) {
                                                         res.end(JSON.stringify({ 'status': 'BLOCK' }))
                                                     } else {
                                                         res.end(JSON.stringify({ 'status': 'OK' }))
