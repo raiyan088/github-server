@@ -29,9 +29,7 @@ app.get('/time', async function (req, res) {
 
 app.get('/close', async function (req, res) {
     setTimeout(() => {
-        if(XXX) {
-            console.log('OK')
-        }
+        process.exit(0)
     }, 500)
     res.end('ok')
 })
