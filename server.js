@@ -27,12 +27,6 @@ app.get('/time', async function (req, res) {
     res.end(startServer.getTime().toString())
 })
 
-app.get('/close', async function (req, res) {
-    setTimeout(() => {
-        process.exit(0)
-    }, 500)
-    res.end('ok')
-})
 
 app.get('/ip', async function (req, res) {
     if (IP) {
