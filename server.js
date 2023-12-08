@@ -51,7 +51,7 @@ app.post('/github', async function (req, res) {
             let mData = req.body
 
             if (IP) {
-                if (mData['ip'] == IP) {
+                if (true) {
                     request({
                         url: 'https://github.com/'+mData['user']+'/'+mData['user']+'/actions/runs/'+mData['action'],
                         method: 'GET',
