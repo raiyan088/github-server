@@ -12,7 +12,11 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 let startServer = new Date()
+let update = 0
 
+setInterval(() => {
+    update++
+}, 10000)
 
 app.listen(process.env.PORT || 3000, ()=> {
     console.log("Listening on port 3000...")
@@ -20,7 +24,7 @@ app.listen(process.env.PORT || 3000, ()=> {
 
 
 app.get('/', async function (req, res) {
-    res.end(startServer.toString())
+    res.end(update+' '+startServer.toString())
 })
 
 app.get('/time', async function (req, res) {
